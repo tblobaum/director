@@ -1,8 +1,8 @@
 
 
 //
-// Generated on Tue Dec 06 2011 04:47:21 GMT-0500 (EST) by Nodejitsu, Inc (Using Codesurgeon).
-// Version 1.0.7
+// Generated on Sun Jan 08 2012 19:56:17 GMT-0600 (CST) by Nodejitsu, Inc (Using Codesurgeon).
+// Version 1.0.8
 //
 
 (function (exports) {
@@ -255,7 +255,8 @@ Router.prototype.getRoute = function (v) {
 Router.prototype.destroy = function () {
   listener.destroy(this.handler);
   return this;
-};function _every(arr, iterator) {
+};
+function _every(arr, iterator) {
     for (var i = 0; i < arr.length; i += 1) {
         if (iterator(arr[i], i, arr) === false) {
             return;
@@ -303,7 +304,7 @@ function paramifyString(str, params, mod) {
             }
         }
     }
-    return mod === str ? "([a-zA-Z0-9-._]+)" : mod;
+    return mod === str ? "([._a-zA-Z0-9-]+)" : mod;
 }
 
 function regifyString(str, params) {
@@ -368,10 +369,7 @@ Router.prototype.on = Router.prototype.route = function(method, path, route) {
 };
 
 Router.prototype.dispatch = function(method, path, callback) {
-    var self = this, 
-        fns = this.traverse(method, path, this.routes, ""), 
-        invoked = this._invoked, 
-        after;
+    var self = this, fns = this.traverse(method, path, this.routes, ""), invoked = this._invoked, after;
     this._invoked = true;
     if (!fns || fns.length === 0) {
         this.last = [];
@@ -407,8 +405,10 @@ Router.prototype.dispatch = function(method, path, callback) {
 Router.prototype.invoke = function(fns, thisArg, callback) {
     var self = this;
     if (this.async) {
-        _asyncEverySeries(fns, function(fn, next) {
-            if (typeof fn == "function") {
+        _asyncEverySeries(fns, function apply(fn, next) {
+            if (Array.isArray(fn)) {
+                return _asyncEverySeries(fn, apply, next);
+            } else if (typeof fn == "function") {
                 fn.apply(thisArg, fns.captures.concat(next));
             }
         }, function() {
