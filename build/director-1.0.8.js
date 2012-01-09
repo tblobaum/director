@@ -1,7 +1,7 @@
 
 
 //
-// Generated on Sun Jan 08 2012 19:56:17 GMT-0600 (CST) by Nodejitsu, Inc (Using Codesurgeon).
+// Generated on Mon Jan 09 2012 02:12:50 GMT-0600 (CST) by Nodejitsu, Inc (Using Codesurgeon).
 // Version 1.0.8
 //
 
@@ -157,7 +157,8 @@ var Router = exports.Router = function (routes) {
   this.routes   = {};
   this.methods  = ['on', 'once', 'after', 'before'];
   this._methods = {};
-
+  this.scope    = [];
+  
   this._insert = this.insert;
   this.insert = this.insertEx;
 
