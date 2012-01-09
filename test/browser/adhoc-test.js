@@ -1,40 +1,18 @@
-//reset these each test
-var activity;
 
-//create the router
-var router = new Router();
+createTest('adhoc routing should not break', {
 
-//setup/takedown
-module("SS.js", {
-  setup: function() {
-    window.location.hash = "";
-    activity = 0;;
-  },
-  teardown: function() {
-    window.location.hash = "";
-  }
-});
+}, function() {
 
-
-asyncTest("adhoc routing", function() {
-
-  // 
-
-  router.path('/a', function() {
-
-    // the bennifit of calling `this.route` as opposed to `this.get` or `this.post` is that
-    // you can continue to define the route structure (ad-hoc) and then assign units of logic
-    // per event type, there will be less repetition of definition, and the code will be more 
-    // readable/centralized.
-
-    this.path('/b', {
-      on: function() {},
-      after: function() {}
-      before: function() {}
-    });
-
+  shared.fired = [];
+  
+  this.router.on('/a/:id', function(id) {
+    shared.fired.push(location.hash);
   });
 
-  window.location.hash = "/a";
-
+  this.navigate('/a/test', function() {
+    deepEqual(shared.fired, ['#/a/test']);
+    this.finish();
+  });
+  
 });
+
